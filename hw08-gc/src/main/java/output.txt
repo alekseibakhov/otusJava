@@ -1,0 +1,20 @@
+G1GC
+256m spend msec:24490, sec:24
+512m spend msec:16765, sec:16
+768m spend msec:15439, sec:15
+1024m spend msec:14801, sec:14
+1536m spend msec:14884, sec:14
+1700m spend msec:10571, sec:10
+2048m spend msec:13432, sec:13
+
+с изменениями кода
+----------------------
+G1GC
+256m spend msec:3332, sec:3
+768m spend msec:2545, sec:2
+1700m spend msec:3121, sec:3
+
+ParallelGC
+256m error
+768 spend msec:12448, sec:12
+1700 spend msec:3673, sec:3
