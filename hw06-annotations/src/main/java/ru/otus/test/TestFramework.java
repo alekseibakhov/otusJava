@@ -23,6 +23,11 @@ public class TestFramework {
         List<Method> afterMethods = Helper.getAnnotatedMethods(testClass, After.class);
 
 
+        startTests(testMethods, testClass, beforeMethods, afterMethods);
+        showStatistics();
+    }
+
+    private static void startTests(List<Method> testMethods, Class<?> testClass, List<Method> beforeMethods, List<Method> afterMethods) throws Exception {
         for (Method testMethod : testMethods) {
 
             Object testObject = testClass.getDeclaredConstructor().newInstance();
@@ -38,7 +43,6 @@ public class TestFramework {
                 invokeMethods(afterMethods, testObject);
             }
         }
-        showStatistics();
     }
 
     private static void showStatistics() {
