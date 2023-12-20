@@ -31,7 +31,7 @@ class DemoInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        method = TestLogging.class.getMethod("calculation", method.getParameterTypes());
+        method = TestLogging.class.getMethod(method.getName(), method.getParameterTypes());
         if (methods.contains(method)) {
             log.info("Executed method: {}, param: {}", method.getName(), Arrays.toString(args));
         }
