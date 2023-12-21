@@ -1,5 +1,7 @@
 rootProject.name = "otusJava"
-include("hw01-gradle", "hw02-generics","hw06-annotations", "hw10-byteCodes")
+
+include("hw01-gradle", "hw02-generics","hw06-annotations","hw08-gc", "hw10-byteCodes")
+
 
 
 pluginManagement {
