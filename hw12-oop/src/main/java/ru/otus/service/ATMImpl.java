@@ -7,13 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TerminalImpl implements Terminal {
-    private final TerminalLoadBanknotes terminalLoadBanknotes = new TerminalLoadBanknotesImpl();
-    private final TerminalIssueBanknotes terminalIssueBanknotes = new TerminalIssueBanknotesImpl();
+public class ATMImpl implements ATM {
+    private final BanknoteService banknoteService = new BanknoteService();
 
     private final Map<Banknote, Integer> banknoteSlots = new HashMap<>();
 
-    public TerminalImpl() {
+    public ATMImpl() {
         createSlots();
     }
 
@@ -36,14 +35,14 @@ public class TerminalImpl implements Terminal {
             throw new InvalidBanknoteException("Minimum issue amount - 10р");
         }
 
-        List<Banknote> banknotes = terminalIssueBanknotes.issueBanknotes(amount, banknoteSlots);
+        List<Banknote> banknotes = banknoteService.issueBanknotes(amount, banknoteSlots);
         balance -= amount;
         return banknotes;
     }
 
     @Override
     public void loadBanknotes(List<Banknote> banknotes) {
-        balance += terminalLoadBanknotes.loadBanknotes(banknotes, banknoteSlots);
+        balance += banknoteService.loadBanknotes(banknotes, banknoteSlots);
     }
 
     private void createSlots() {

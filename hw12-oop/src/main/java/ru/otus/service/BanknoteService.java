@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TerminalIssueBanknotesImpl implements TerminalIssueBanknotes{
-    static final Logger log = LoggerFactory.getLogger(TerminalIssueBanknotesImpl.class);
+public class BanknoteService implements TerminalIssueBanknotes, TerminalLoadBanknotes{
+    static final Logger log = LoggerFactory.getLogger(BanknoteService.class);
 
     @Override
     public List<Banknote> issueBanknotes(int amountIssue, Map<Banknote, Integer> banknoteSlots) throws InvalidBanknoteException {
@@ -52,5 +52,16 @@ public class TerminalIssueBanknotesImpl implements TerminalIssueBanknotes{
         }
         log.info("The amount has been issued {}", amountIssue);
         return result;
+    }
+
+    @Override
+    public long loadBanknotes(List<Banknote> banknotesForLoad, Map<Banknote, Integer> banknoteSlots) {
+        int loadingSum = 0;
+        for (Banknote banknote : banknotesForLoad) {
+            loadingSum += banknote.getAmount();
+            banknoteSlots.put(banknote, banknoteSlots.get(banknote) + 1);
+        }
+        log.info("Loading sum: {}", loadingSum);
+        return loadingSum;
     }
 }
