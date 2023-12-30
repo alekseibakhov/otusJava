@@ -7,7 +7,11 @@ public class BanknoteStorageImpl implements BanknoteStorageService {
     private final Map<Banknote, Integer> banknoteSlots = new HashMap<>();
 
     public BanknoteStorageImpl() {
-        createSlots();
+        banknoteSlots.put(Banknote.CASH10, 0);
+        banknoteSlots.put(Banknote.CASH50, 0);
+        banknoteSlots.put(Banknote.CASH100, 0);
+        banknoteSlots.put(Banknote.CASH200, 0);
+        banknoteSlots.put(Banknote.CASH500, 0);
     }
 
     @Override
@@ -15,11 +19,4 @@ public class BanknoteStorageImpl implements BanknoteStorageService {
         return banknoteSlots;
     }
 
-    private void createSlots() {
-        banknoteSlots.put(Banknote.CASH10, 0);
-        banknoteSlots.put(Banknote.CASH50, 0);
-        banknoteSlots.put(Banknote.CASH100, 0);
-        banknoteSlots.put(Banknote.CASH200, 0);
-        banknoteSlots.put(Banknote.CASH500, 0);
-    }
 }

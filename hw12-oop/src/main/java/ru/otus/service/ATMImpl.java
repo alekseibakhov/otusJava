@@ -8,7 +8,6 @@ import java.util.List;
 public class ATMImpl implements ATM {
     private final BanknoteService banknoteService = new BanknoteService();
     private final BanknoteStorageService banknoteSlots = new BanknoteStorageImpl();
-
     private long balance;
 
     @Override
@@ -24,7 +23,7 @@ public class ATMImpl implements ATM {
         if (amount > balance) {
             throw new BalanceException("Your balance is less than the requested amount");
         }
-        if (amount % 10 != 0) {
+        if (amount % Banknote.CASH10.getAmount() != 0) {
             throw new InvalidBanknoteException("Minimum issue amount - 10р");
         }
 
