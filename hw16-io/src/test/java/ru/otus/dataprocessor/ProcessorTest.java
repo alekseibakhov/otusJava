@@ -7,15 +7,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class ProcessorTest {
-
-    // Надо реализовать методы классов и убедиться, что тест проходит
-    // сам тест менять нельзя
 
     @Test
     @DisplayName("Из файла читается json, обрабатывается, результат сериализуется в строку")
