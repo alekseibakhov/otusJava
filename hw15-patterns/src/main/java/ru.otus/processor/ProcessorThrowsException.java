@@ -6,9 +6,15 @@ import java.time.LocalDateTime;
 
 public class ProcessorThrowsException implements Processor {
     private final LocalDateTime dateTime;
-    public ProcessorThrowsException(LocalDateTime localDateTime){
+
+    public ProcessorThrowsException(LocalDateTime localDateTime) {
         this.dateTime = localDateTime;
     }
+
+    public ProcessorThrowsException() {
+        this.dateTime = LocalDateTime.now();
+    }
+
     @Override
     public Message process(Message message) {
 
