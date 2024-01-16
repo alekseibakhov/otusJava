@@ -13,9 +13,9 @@ public class ProcessorExceptionTest {
 
     @Test
     void dontThrowException() {
-        LocalDateTime dateTime1 = LocalDateTime.now().withSecond(1);
+        LocalDateTime dateTime = LocalDateTime.now().withSecond(1);
 
-        var processor = new ProcessorThrowsException(dateTime1);
+        var processor = new ProcessorThrowsException(()-> dateTime);
 
         var msg = new Message.Builder(1L).field1("field1").build();
 
@@ -26,9 +26,9 @@ public class ProcessorExceptionTest {
     void throwException() {
         LocalDateTime dateTime = LocalDateTime.now().withSecond(2);
 
-        var processor = new ProcessorThrowsException(dateTime);
+        var processor = new ProcessorThrowsException(()-> dateTime);
 
-        var msg = new Message.Builder(1L).field1("field1").build();
+        var msg = new Message.Builder(1L).field1("field1").field3("f3").build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> processor.process(msg));
     }

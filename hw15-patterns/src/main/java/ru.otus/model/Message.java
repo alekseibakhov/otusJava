@@ -1,6 +1,7 @@
 package ru.otus.model;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Message {
     private final long id;
@@ -233,9 +234,12 @@ public class Message {
         }
 
         private ObjectForMessage getCopy(ObjectForMessage field13) {
-            ObjectForMessage message = new ObjectForMessage();
-            message.setData(List.copyOf(field13.getData()));
-            return message;
+            if (Objects.nonNull(field13)) {
+                ObjectForMessage message = new ObjectForMessage();
+                message.setData(List.copyOf(field13.getData()));
+                return message;
+            }
+            return null;
         }
 
         public Message build() {
