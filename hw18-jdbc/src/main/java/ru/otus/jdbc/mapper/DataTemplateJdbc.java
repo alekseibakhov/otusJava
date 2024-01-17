@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
-/** Сохратяет объект в базу, читает объект из базы */
+/** Сохраняет объект в базу, читает объект из базы */
 @SuppressWarnings("java:S1068")
 public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
