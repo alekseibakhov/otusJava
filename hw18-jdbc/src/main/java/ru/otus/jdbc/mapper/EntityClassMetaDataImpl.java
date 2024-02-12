@@ -16,9 +16,10 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     public EntityClassMetaDataImpl(Class<T> javaClass) {
         this.javaClass = javaClass;
     }
+
     @Override
     public String getName() {
-        return javaClass.getName();
+        return javaClass.getSimpleName();
     }
 
     @Override
@@ -30,19 +31,19 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Field getIdField() {
-        return Arrays.stream(javaClass.getFields())
+        return Arrays.stream(javaClass.getDeclaredFields())
                 .filter(field -> Objects.nonNull(field.getAnnotation(Id.class)))
                 .findAny().orElseThrow();
     }
 
     @Override
     public List<Field> getAllFields() {
-        return List.of(javaClass.getFields());
+        return List.of(javaClass.getDeclaredFields());
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return Arrays.stream(javaClass.getFields())
+        return Arrays.stream(javaClass.getDeclaredFields())
                 .filter(field -> Objects.isNull(field.getAnnotation(Id.class)))
                 .toList();
     }

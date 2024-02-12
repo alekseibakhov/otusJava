@@ -1,30 +1,56 @@
 package ru.otus.jdbc.mapper;
 
 
-public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
-    private final EntityClassMetaData entityClassMetaDataClient;
+import java.lang.reflect.Field;
 
-    public EntitySQLMetaDataImpl(EntityClassMetaData entityClassMetaDataClient) {
+public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
+    private final EntityClassMetaData<?> entityClassMetaDataClient;
+
+    public EntitySQLMetaDataImpl(EntityClassMetaData<?> entityClassMetaDataClient) {
         this.entityClassMetaDataClient = entityClassMetaDataClient;
     }
 
     @Override
     public String getSelectAllSql() {
-        return null;
+        return "select * form %s"
+                .formatted(entityClassMetaDataClient.getName());
     }
 
     @Override
     public String getSelectByIdSql() {
-        return null;
+        return "select * form %s where %s = ?"
+                .formatted(entityClassMetaDataClient.getName(), entityClassMetaDataClient.getIdField());
     }
 
     @Override
     public String getInsertSql() {
-        return null;
+        var tableName = entityClassMetaDataClient.getName();
+        var fieldNamesWithoutId = entityClassMetaDataClient.getFieldsWithoutId().stream()
+                .map(Field::getName)
+                .toList();
+
+        var columnNames = String.join(", ", fieldNamesWithoutId);
+
+        var countValues = fieldNamesWithoutId.stream().map(params -> "?").toList();
+        var countParams = String.join(", ", countValues);
+
+        return "insert into %s (%s) values (%s)".formatted(tableName, columnNames, countParams);
     }
 
     @Override
     public String getUpdateSql() {
-        return null;
+        var idField = entityClassMetaDataClient.getIdField();
+
+        var tableName = entityClassMetaDataClient.getName();
+        var fieldNamesWithoutId = entityClassMetaDataClient.getFieldsWithoutId().stream()
+                .map(Field::getName)
+                .toList();
+
+        var idFieldName = idField.getName();
+
+        var countValues = fieldNamesWithoutId.stream().map("%s = ?"::formatted).toList();
+        var countParams = String.join(", ", countValues);
+
+        return "update %s set %s where %s = ?".formatted(tableName, countParams, idFieldName);
     }
 }
