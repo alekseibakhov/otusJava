@@ -12,14 +12,14 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
 
     @Override
     public String getSelectAllSql() {
-        return "select * form %s"
+        return "select * from %s"
                 .formatted(entityClassMetaDataClient.getName());
     }
 
     @Override
     public String getSelectByIdSql() {
-        return "select * form %s where %s = ?"
-                .formatted(entityClassMetaDataClient.getName(), entityClassMetaDataClient.getIdField());
+        return "select * from %s where %s = ?"
+                .formatted(entityClassMetaDataClient.getName(), entityClassMetaDataClient.getIdField().getName());
     }
 
     @Override

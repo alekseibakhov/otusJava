@@ -3,7 +3,6 @@ package ru.otus.jdbc.mapper;
 import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
-import ru.otus.crm.model.Client;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -21,11 +20,11 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final DbExecutor dbExecutor;
     private final EntitySQLMetaData entitySQLMetaData;
-    private final EntityClassMetaData<Client> entityClassMetaDataClient;
+    private final EntityClassMetaData<?> entityClassMetaDataClient;
 
     public DataTemplateJdbc(DbExecutor dbExecutor,
                             EntitySQLMetaData entitySQLMetaData,
-                            EntityClassMetaData<Client> entityClassMetaDataClient) {
+                            EntityClassMetaData<?> entityClassMetaDataClient) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
         this.entityClassMetaDataClient = entityClassMetaDataClient;
@@ -104,7 +103,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
         var args = allFields.stream().map(f -> getArgsForConstructor(rs, f)).toList();
 
-        return (T) constructor.newInstance(args);
+        return (T) constructor.newInstance(args.toArray());
     }
 
     private Object getArgsForConstructor(ResultSet rs, Field f) {

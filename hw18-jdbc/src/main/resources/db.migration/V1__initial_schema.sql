@@ -3,7 +3,7 @@ create table test
     id   int,
     name varchar(50)
 );
-create table Client
+create table client
 (
     id   bigserial not null primary key,
     name varchar(50)
@@ -11,6 +11,7 @@ create table Client
 
 create table manager
 (
-    id   bigserial not null primary key,
-    name varchar(50)
+    no   bigserial not null primary key,
+    label varchar(50),
+    param1 varchar(50)
 );

@@ -24,7 +24,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     @Override
     public Constructor<T> getConstructor() {
-        return (Constructor<T>) Arrays.stream(javaClass.getDeclaredConstructors())
+        return (Constructor<T>) Arrays.stream(javaClass.getConstructors())
                 .max(Comparator.comparing(Constructor::getParameterCount))
                 .orElseThrow();
     }
