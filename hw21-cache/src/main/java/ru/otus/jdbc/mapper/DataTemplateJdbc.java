@@ -1,5 +1,6 @@
 package ru.otus.jdbc.mapper;
 
+import ru.otus.cachehw.HwCache;
 import ru.otus.core.repository.DataTemplate;
 import ru.otus.core.repository.DataTemplateException;
 import ru.otus.core.repository.executor.DbExecutor;
@@ -9,25 +10,27 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-/** Сохраняет объект в базу, читает объект из базы */
+/**
+ * Сохраняет объект в базу, читает объект из базы
+ */
 @SuppressWarnings("java:S1068")
 public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final DbExecutor dbExecutor;
     private final EntitySQLMetaData entitySQLMetaData;
     private final EntityClassMetaData<?> entityClassMetaDataClient;
+    private final HwCache<Long, T> myCache;
 
     public DataTemplateJdbc(DbExecutor dbExecutor,
                             EntitySQLMetaData entitySQLMetaData,
-                            EntityClassMetaData<?> entityClassMetaDataClient) {
+                            EntityClassMetaData<?> entityClassMetaDataClient,
+                            HwCache<Long, T> myCache) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
         this.entityClassMetaDataClient = entityClassMetaDataClient;
+        this.myCache = myCache;
     }
 
     @Override
@@ -35,8 +38,15 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), rs -> {
             try {
                 if (rs.next()) {
-                    return createResult(rs);
+                    var obj = myCache.get(id);
+                    if (Objects.nonNull(obj)) {
+                        return obj;
+                    }
+                    var result = createResult(rs);
+                    myCache.put(id, result);
+                    return result;
                 }
+
                 return null;
             } catch (Exception e) {
                 throw new DataTemplateException(e);
@@ -54,7 +64,6 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
                     try {
                         while (rs.next()) {
-
                             entityList.add(createResult(rs));
                         }
 
@@ -77,7 +86,20 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         var paramValues =
                 fieldsToInsert.stream().map(field -> getFieldValue(field, client)).toList();
 
-        return dbExecutor.executeStatement(connection, query, paramValues);
+        var idValue = dbExecutor.executeStatement(connection, query, paramValues);
+
+        var idField = entityClassMetaDataClient.getIdField();
+        try {
+            idField.setAccessible(true);
+            idField.set(client, idValue);
+            myCache.put(idValue, client);
+        } catch (IllegalAccessException e) {
+            throw new DataTemplateException(e);
+        } finally {
+            idField.setAccessible(false);
+        }
+
+        return idValue;
     }
 
     @Override
@@ -90,23 +112,24 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         idValue = getFieldValue(idField, client);
 
         var paramValues =
-                fieldsToInsert.stream().map(f -> getFieldValue(f, client)).toList();
+                new ArrayList<>(fieldsToInsert.stream().map(f -> getFieldValue(f, client)).toList());
 
         paramValues.add(idValue);
 
         dbExecutor.executeStatement(connection, query, paramValues);
+        myCache.put((long) idValue, client);
     }
 
-    private <T> T createResult(ResultSet rs) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    private T createResult(ResultSet rs) throws InvocationTargetException, InstantiationException, IllegalAccessException {
         var allFields = entityClassMetaDataClient.getAllFields();
         var constructor = entityClassMetaDataClient.getConstructor();
 
-        var args = allFields.stream().map(f -> getArgsForConstructor(rs, f)).toList();
+        var args = allFields.stream().map(f -> getArgForConstructor(rs, f)).toList();
 
         return (T) constructor.newInstance(args.toArray());
     }
 
-    private Object getArgsForConstructor(ResultSet rs, Field f) {
+    private Object getArgForConstructor(ResultSet rs, Field f) {
         try {
             return rs.getObject(f.getName());
         } catch (SQLException e) {
