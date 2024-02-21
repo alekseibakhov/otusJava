@@ -1,10 +1,8 @@
 package ru.otus.crm.model;
 
 import jakarta.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +15,7 @@ import lombok.Setter;
 public class Client implements Cloneable {
 
     @Id
-    @SequenceGenerator(name = "client_gen", sequenceName = "client_seq", initialValue = 1, allocationSize = 1)
+    @SequenceGenerator(name = "client_gen", sequenceName = "client_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_gen")
     @Column(name = "id")
     private Long id;
@@ -26,7 +24,7 @@ public class Client implements Cloneable {
     private String name;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
     private Address address;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "client")
@@ -55,12 +53,12 @@ public class Client implements Cloneable {
     @Override
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
-        var cloneClient = new Client(this.id, this.name);
+        var newClient = new Client(this.id, this.name);
 
-        cloneClient.setAddress(this.address != null ? this.address.clone() : null);
-        this.phones.forEach(ph -> cloneClient.phones.add(new Phone(ph.getId(), ph.getNumber(), cloneClient)));
+        newClient.setAddress(this.address != null ? this.address.clone() : null);
+        this.phones.forEach(phone -> newClient.phones.add(new Phone(phone.getId(), phone.getNumber(), newClient)));
 
-        return cloneClient;
+        return newClient;
     }
 
     @Override
