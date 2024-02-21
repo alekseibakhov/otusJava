@@ -1,7 +1,33 @@
 package ru.otus.crm.model;
 
-public class Phone {
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Table(name = "phone")
+public class Phone implements Cloneable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "number")
+    private String number;
+
+    @JoinColumn(name = "client_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Client client;
+
     public Phone(Long id, String number) {
-        throw new UnsupportedOperationException();
+        this.id = id;
+        this.number = number;
+    }
+
+    public Phone(Long id, String number, Client client) {
+        this.id = id;
+        this.number = number;
+        this.client = client;
     }
 }
