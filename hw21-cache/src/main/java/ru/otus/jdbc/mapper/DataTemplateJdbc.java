@@ -35,13 +35,13 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     @Override
     public Optional<T> findById(Connection connection, long id) {
+        var obj = myCache.get(id);
+        if (Objects.nonNull(obj)) {
+            return Optional.of(obj);
+        }
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), rs -> {
             try {
                 if (rs.next()) {
-                    var obj = myCache.get(id);
-                    if (Objects.nonNull(obj)) {
-                        return obj;
-                    }
                     var result = createResult(rs);
                     myCache.put(id, result);
                     return result;

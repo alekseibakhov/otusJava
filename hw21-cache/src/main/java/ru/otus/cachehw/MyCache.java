@@ -19,7 +19,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
     @Override
     public void put(K key, V value) {
         weakHashMap.put(key, value);
-        listenerList.parallelStream().forEach(listener -> listener.notify(key, value, "put"));
+        listenerList.forEach(listener -> listener.notify(key, value, "put"));
     }
 
     @Override
@@ -27,7 +27,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
         var value = weakHashMap.get(key);
         if (Objects.nonNull(value)) {
             weakHashMap.remove(key);
-            listenerList.parallelStream().forEach(listener -> listener.notify(key, value, "remove"));
+            listenerList.forEach(listener -> listener.notify(key, value, "remove"));
         }
     }
 
