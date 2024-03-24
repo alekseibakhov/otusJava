@@ -11,7 +11,7 @@ public class Demo {
         new Thread(() -> demo.action(2)).start();
     }
 
-    private synchronized void action(int numberInMethodThread) {
+    private synchronized void action(int numberThread) {
         try {
             int countPrint = 1;
 
@@ -19,20 +19,17 @@ public class Demo {
             int compute = 1;
 
             while (countPrint < 20) {
-                if (numberCurrentThread == numberInMethodThread) {
+                while (numberCurrentThread == numberThread) {
                     this.wait();
                 }
-
-                log.info("Val {}", counter);
+                log.info("Res {}", counter);
 
                 if (counter == 10) {
                     compute = -1;
                 }
-                if (counter == 1) {
-                    compute = 1;
-                }
+
                 counter = counter + compute;
-                numberCurrentThread = numberInMethodThread;
+                numberCurrentThread = numberThread;
 
                 countPrint++;
                 notifyAll();
@@ -41,6 +38,4 @@ public class Demo {
             throw new RuntimeException(e);
         }
     }
-
-
 }
