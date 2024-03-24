@@ -1,9 +1,8 @@
-package otus.handler;
+package ru.otus.handler;
 
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.handler.ComplexProcessor;
 import ru.otus.listener.Listener;
 import ru.otus.model.Message;
 import ru.otus.processor.Processor;
