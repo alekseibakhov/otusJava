@@ -7,11 +7,11 @@ public class Demo {
 
     public static void main(String[] args) {
         Demo demo = new Demo();
-        new Thread(() -> demo.action(1)).start();
-        new Thread(() -> demo.action(2)).start();
+        new Thread(() -> demo.printNumbers(1)).start();
+        new Thread(() -> demo.printNumbers(2)).start();
     }
 
-    private synchronized void action(int numberThread) {
+    private synchronized void printNumbers(int numberThread) {
         try {
             int countPrint = 1;
 
