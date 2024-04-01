@@ -1,8 +1,7 @@
-package otus.processor;
+package ru.otus.processor;
 
 import org.junit.jupiter.api.Test;
 import ru.otus.model.Message;
-import ru.otus.processor.ProcessorThrowsException;
 
 import java.time.LocalDateTime;
 
